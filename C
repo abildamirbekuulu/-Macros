@@ -1,0 +1,282 @@
+#include <stdio.h>
+#include <string.h>
+#define NUM_ROWS 5
+#define NUM_COLUMNS 5
+#define NUM_STRINGS 5
+#define STRING_LENGTH 50
+
+void printMatrix(int matrix[NUM_ROWS][NUM_COLUMNS])
+{
+    for (int i = 0; i < NUM_ROWS; i++)
+    {
+        for (int j = 0; j < NUM_COLUMNS; j++)
+        {
+        printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+// Uses pointer 'ptr' to traverse the 2D character array 'strings' and print each string.
+void printStrings(char strings[NUM_STRINGS][STRING_LENGTH])
+{
+    char* ptr = &strings[0][0];
+    for (int i = 0; i < NUM_STRINGS; i++)
+    {
+        for (int j = 0; j < STRING_LENGTH; j++)
+        {
+            printf("%c", *ptr++); // print char after char to print a string
+        }
+        printf("\n"); // go to new line after printing one string
+    }
+}
+
+void createMatrix(){
+    // Use this matrix to store each element
+    int matrixResult[NUM_ROWS][NUM_COLUMNS];
+    int x = 1;
+    for(int i = 0; i < NUM_ROWS; i++){
+        //BECAUSE OF THE LENGTH OF COLUMNS SMALL, I WILL DO IT MANUALLY.
+        matrixResult[i][0] = x;
+        matrixResult[i][1] = x + 1;
+        matrixResult[i][2] = x + 2;
+        matrixResult[i][3] = x + 1;
+        matrixResult[i][4] = x;
+        x++;
+    }
+    printMatrix(matrixResult);
+}
+
+void scalarMatrix(int matrix[NUM_ROWS][NUM_COLUMNS], int multiple)
+{
+// Use this matrix to store each element
+    int matrixResult[NUM_ROWS][NUM_COLUMNS];
+    for(int i = 0; i < NUM_ROWS; i++){
+        for(int j = 0; j < NUM_COLUMNS; j++){
+            matrixResult[i][j] = matrix[i][j] * multiple;
+        }
+    }
+    printMatrix(matrixResult);
+}
+
+void sumRowsMult(int matrix[NUM_ROWS][NUM_COLUMNS])
+{
+    // Use this matrix to store each element
+    int matrixResult[NUM_ROWS];
+    for(int i = 0; i < NUM_ROWS; i++){
+        int sum = 0; 
+        for(int j = 0; j < NUM_COLUMNS; j++){ // EVERY TIME, WHEN WE START ADDING NEW ROW SUM IS ZERO, AND IT WILL SUM A ROW. SO WE COULD LATER MULTIPLY IT 2.
+            sum += matrix[i][j];    
+        }
+        matrixResult[i] = sum * 2;
+    }
+    for(int i = 0 ; i < 5 ; i ++){
+        printf("%d ", matrixResult[i]);
+    }
+    printf("\n");
+}
+
+void transposeMatrix(int matrix[NUM_ROWS][NUM_COLUMNS])
+{
+    // Use this matrix to store each element
+    int matrixResult[NUM_ROWS][NUM_COLUMNS];
+    for(int i = 0; i < NUM_ROWS; i++){
+        for(int j = 0; j < NUM_COLUMNS; j++){
+            matrixResult[j][i] = matrix[i][j]; // ON MY matrixResult, I AM GOING FIRST THROUGH EVERY ROWS IN THAT COLUMN. AND I MOVE NEXT COLUMN.  
+        }
+    }
+    printMatrix(matrixResult);
+}
+
+void initializeStrings(char strings[NUM_STRINGS][STRING_LENGTH])
+{
+    char* ptr = &strings[0][0];
+    for(int i = 0; i < NUM_STRINGS; i++){
+        for(int j = 0; j < STRING_LENGTH; j++){
+            *(ptr + i * STRING_LENGTH + j) = '\0'; // BY MULTUPLING "I" TO "STRING_LENGTH". I AM GETTING THE ROW OF STRING.
+        }
+    }
+}
+
+void toUppercase(char strings[NUM_STRINGS][STRING_LENGTH]) {
+    char* p = &strings[0][0];
+    for(int i = 0; i < NUM_STRINGS; i++){
+        for(int j = 0; j < STRING_LENGTH; j++){
+            if(*(p + i * STRING_LENGTH + j) != '\0' && (*(p + i * STRING_LENGTH + j) >= 97 && *(p + i * STRING_LENGTH + j) <= 122)){ // CHECKIG THE CHAR IS NOT '\0' AND LOWERCASE.
+                *(p + i * STRING_LENGTH + j) -= 32;// BY MUNICING 32 FROM IT'S ASCII, I AM GETTING IT'S UPPER CASE ASCII.
+            }
+        }
+    }
+}
+
+void concatStr(char strings[NUM_STRINGS][STRING_LENGTH], char result[NUM_STRINGS * STRING_LENGTH]) {
+    char* p_result = result;
+    char* p_input = &strings[0][0];
+    for (int i = 0; i < NUM_STRINGS; i++) {
+        for (int j = 0; j < STRING_LENGTH; j++) {
+            char cur = *p_input++;
+            if(cur != '\0'){
+                *p_result = cur;//GETTING THE CHAR AND ADDING IT TO RESULT
+                p_result++; // MOVING TO NEXT POINT OR POSITION.
+            }
+        }
+        *p_result = ' ';
+         p_result++;
+    }
+    *p_result = '\0';
+}
+
+void reverseStrings(char strings[NUM_STRINGS][STRING_LENGTH])
+{
+    char temp; // not necessary to use this variable
+    char* ptr; // pointer you'll use to keep track of your current string
+    int len; // len of current string
+    for(int i = 0; i < NUM_STRINGS; i++){
+        ptr = &strings[i][0];
+        len = 0;
+        while(*(ptr + len) != '\0'){
+            len++;
+        }
+        for(int j = 0; j < len/2; j++){
+            // SWAPPING THEM USING  
+            temp = *(ptr + len - 1 - j);
+            *(ptr + len - 1 - j) = *(ptr + j);
+            *(ptr + j) = temp;
+        }
+    }
+}
+
+void splitWords(char s[NUM_STRINGS*STRING_LENGTH]){
+    char str[NUM_STRINGS][STRING_LENGTH];
+    int s_index = 0, word_num = 0, char_index = 0;
+    for (int i = 0; i < NUM_STRINGS; i++) {
+        for (int j = 0; j < STRING_LENGTH; j++) {
+            str[i][j] = '\0';
+        }
+    }
+    while (s[s_index] != '\0') {
+        while (s[s_index] == ' ' || s[s_index] == '\t' || s[s_index] == '\n') { //if we are on any of this sign, we are just skipping 
+            s_index++;
+        }
+        while (s[s_index] != ' ' && s[s_index] != '\t' && s[s_index] != '\n' && s[s_index] != '\0') { // if it's not a sign, that means it's a word and we are saving in our array
+            str[word_num][char_index] = s[s_index];
+            s_index++;
+            char_index++;
+        }
+        if (s[s_index] == '\0') {
+            break;
+        }
+        // for a nex word
+        word_num++;
+        char_index = 0;
+    }
+    for (int i = 0; i <= word_num; i++) {
+        printf("%s\n", str[i]);
+    }
+}
+
+int wordMatch(char strings[NUM_STRINGS][STRING_LENGTH], char input[STRING_LENGTH])
+{
+    char* p = &strings[0][0];
+    char* ip = input;
+    int flag = 0;
+    for (int i = 0; i < NUM_STRINGS; i++) {
+        p = &strings[i][0];
+        while (*p != '\0' && *ip != '\0') {
+            if (*p != *ip) { // if they are not same, we have to renew ip to input. Because it's pointer changed.
+                ip = input;
+                break;
+            }
+            p++; ip++; 
+        }
+
+        if (*p == '\0' && *ip == '\0') { // if we got one same word, we don't care rest of them.
+            flag = 1;
+            break;
+        }
+    }
+    return flag;
+}
+
+int main()
+{
+printf("CSE240 HW3: Array Notation\n\n");
+printf("\nChecking created Matrix.\n");
+createMatrix();
+printf("\n\n");
+int matrix[NUM_ROWS][NUM_COLUMNS] = {
+{25, 20, 15, 10, 5},
+{20, 16, 12, 8, 4},
+{15, 12, 9, 6, 3},
+{10, 8, 6, 4, 2},
+{5, 4, 3, 2, 1}
+};
+printf("\nChecking scalar Matrix.\n");
+scalarMatrix(matrix,2);
+printf("\n\n");
+printf("\nChecking summed Rows.\n");
+sumRowsMult(matrix);
+printf("\n\n");
+printf("\nChecking transposition of Matrix.\n");
+transposeMatrix(matrix);
+printf("\n\n");
+printf("\nCSE240 HW3: Pointer Notation\n\n");
+char words[NUM_STRINGS * STRING_LENGTH];
+printf("\nEnter sentence with max 5 words: ");
+fgets(words, sizeof(words), stdin);
+char strings[NUM_STRINGS][STRING_LENGTH];
+char strings2[NUM_STRINGS][STRING_LENGTH]; // will store four strings each with a max length of 34
+char input[STRING_LENGTH];
+char result[NUM_STRINGS * STRING_LENGTH];
+initializeStrings(strings);
+for (int i = 0; i < NUM_STRINGS; i++)
+{
+printf("Enter a string: "); // prompt for string
+fgets(input, sizeof(input), stdin); // store input string
+input[strlen(input) - 1] = '\0'; // convert trailing '\n' char to '\0' (null terminator)
+strcpy(strings[i], input); // copy input to 2D strings array
+strcpy(strings2[i], input);
+}
+printf("\nInitialized Print:\n");
+printStrings(strings);
+printf("\n\n");
+printf("\nChecking conversion to uppercase.\n");
+toUppercase(strings);
+printStrings(strings);
+printf("\n\n");
+printf("\nThe concatenated string is: \n");
+concatStr(strings, result);
+for (int i = 0; i < NUM_STRINGS * STRING_LENGTH; i++) {
+if (result[i] != '\0') {
+printf("%c", result[i]);
+}
+else
+{
+break;
+}
+}
+printf("\n\n\n\n");
+printf("CSE240 HW3: Combined Notation\n\n");
+printf("\nChecking Reversing of Strings.\n");
+reverseStrings(strings);
+printStrings(strings);
+printf("\n");
+printf("\n\nSplit String: ");
+splitWords(words);
+printf("\n\n");
+printf("Current strings:\n");
+for(int i = 0 ; i < NUM_STRINGS ; i++){
+printf("%s\n", strings2[i]);
+}
+printf("\nEnter a string to find a match: "); // prompt for string
+fgets(input, sizeof(input), stdin); // store input string
+input[strlen(input) - 1] = '\0'; // convert trailing '\n' char to '\0' (null terminator)
+// Word match function call
+int flag = wordMatch(strings2, input);
+if(flag == 0){
+printf("Match Not Found!\n");
+}
+else if(flag == 1){
+printf("Match Found!\n");
+}
+return 0;
+}
